@@ -16,7 +16,7 @@
   register: resultbuild
 
 - name: Publish pichincha.sre collection
-  ansible.builtin.command: ansible-galaxy collection publish pichincha-sre-1.0.7.tar.gz -c -s https://192.168.64.9/pulp_ansible/galaxy/published/
+  ansible.builtin.command: ansible-galaxy collection publish pichincha-sre-1.0.7.tar.gz -c -s https://192.168.64.9/pulp_ansible/galaxy/published/ --token {{ lookup('ansible.builtin.env', 'AUTH_CHECKING') }} 
   args:
     chdir: /tmp/checkout/
   register: resultpublish
