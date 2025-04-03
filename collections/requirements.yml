@@ -1,0 +1,4 @@
+---
+collections:
+  - name: 'pichincha.sre'
+    version: '>=1.0.1'
