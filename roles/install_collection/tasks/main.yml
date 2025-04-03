@@ -9,10 +9,6 @@
     single_branch: yes
     version: main
 
-- name: ckeking env var.
-  ansible.builtin.debug:
-    msg: "'{{ lookup('ansible.builtin.env', 'AUTH_CHECKING') }}' is the HOME environment variable."
-
 - name: Build Install pichincha.sre collection.
   ansible.builtin.command: ansible-galaxy collection build
   args:
@@ -20,7 +16,7 @@
   register: resultbuild
 
 - name: Publish pichincha.sre collection
-  ansible.builtin.command: ansible-galaxy collection publish pichincha-sre-1.0.7.tar.gz -s https://192.168.64.9/pulp_ansible/galaxy/published/ --token "{{ lookup('ansible.builtin.env', 'AUTH_CHECKING') }}" -c
+  ansible.builtin.command: ansible-galaxy collection publish pichincha-sre-1.0.7.tar.gz -s https://192.168.64.9/pulp_ansible/galaxy/published/ --token 25518078f499f208f1219d467c1276f9166cbaf0 -c
   args:
     chdir: /tmp/checkout/
   register: resultpublish
