@@ -9,6 +9,10 @@
     single_branch: yes
     version: main
 
+- name: ckeking env var.
+  ansible.builtin.debug:
+    msg: "'{{ lookup('ansible.builtin.env', 'AUTH_CHECKING') }}' is the HOME environment variable."
+
 - name: Build Install pichincha.sre collection.
   ansible.builtin.command: ansible-galaxy collection build
   args:
