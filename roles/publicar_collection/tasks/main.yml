@@ -1,0 +1,43 @@
+---
+- name: Clonando repositorio de la collection {{ publicar_collection_nombre }}
+  ansible.builtin.git:
+    repo: 'https://BancoPichinchaEC@dev.azure.com/BancoPichinchaEC/BP-Ansible-Plataformas/_git/{{ publicar_collection_nombre }}.git'
+    dest: /tmp/checkout
+    single_branch: yes
+    version: '{{ publicar_collection_repo_branch }}'
+
+- name: Construyendo el build package para publicar la collection {{ publicar_collection_nombre }}.
+  ansible.builtin.command: ansible-galaxy collection build
+  args:
+    chdir: /tmp/checkout/
+  register: publicar_collection_result_build
+
+- name: Obteniendo el nombre del build package creado.
+  ansible.builtin.set_fact:
+    publicar_collection_build_package: "{{ publicar_collection_result_build.stdout | regex_replace('.*/', '') }}"
+
+- name: Publicando el buiild package {{ publicar_collection_build_package }} en la collection {{ publicar_collection_nombre }}
+  ansible.builtin.command: ansible-galaxy collection publish {{ publicar_collection_build_package}} -s {{ publicar_collection_galaxy_api_content_url[publicar_collection_ambiente] }} -c
+  args:
+    chdir: /tmp/checkout/
+  register: publicar_collection_result_publish
+
+- name: Realizando limpieza de los archivos temporales.
+  ansible.builtin.file:
+    state: absent
+    path: /tmp/checkout/
+
+- name: Instalando la collection {{ publicar_collection_nombre }} en el entorno de ejecución.
+  ansible.builtin.command: ansible-galaxy collection install {{ publicar_collection_nombre }}
+
+- name: Listando las collections y versiones instaladas en el entorno de ejecución.
+  ansible.builtin.command: ansible-galaxy collection list
+  register: publicar_collection_result_list
+
+- name: Verificando si la collection {{ publicar_collection_nombre }} y la versión {{ publicar_collection_version }} publicadas son las correctas.
+  ansible.builtin.assert:
+    that:
+      - "'{{ publicar_collection_nombre }}' in publicar_collection_result_list.stdout"
+      - "'{{ publicar_collection_version }}' in publicar_collection_result_list.stdout"
+    fail_msg: "La validación de la collection {{ publicar_collection_nombre }}, versión {{ publicar_collection_version }} falló."
+    success_msg: "La collection {{ publicar_collection_nombre }}, versión {{ publicar_collection_version }} se publicó existosamente!"

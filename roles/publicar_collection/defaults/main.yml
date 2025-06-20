@@ -1,0 +1,6 @@
+---
+publicar_collection_galaxy_api_content_url:
+  lab: "https://192.168.64.9/api/galaxy/content/published/"
+  desa: "https://ansibledesa.uiotest.bpichinchatest.tes/api/galaxy/content/published/"
+  dcp: "https://ansible.uio.bpichincha.com/api/galaxy/content/published/"
+  dca: "https://ansibledca.uio.bpichincha.com/api/galaxy/content/published/"
